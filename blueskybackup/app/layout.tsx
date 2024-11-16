@@ -16,7 +16,7 @@ const geistMono = localFont({
 })
 
 export const metadata: Metadata = {
-  title: 'Backup',
+  title: 'Blueup',
   description: 'Backup your Bluesky account'
 }
 
