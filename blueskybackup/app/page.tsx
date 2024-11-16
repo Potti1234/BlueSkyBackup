@@ -9,7 +9,6 @@ export default function Home () {
   const [email, setEmail] = useState('')
 
   const handleBackup = async () => {
-    // TODO: Implement backup logic
     console.log('Backing up data for:', blueskyAccount, 'Email:', email)
   }
 
