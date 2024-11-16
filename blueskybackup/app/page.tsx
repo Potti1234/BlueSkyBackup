@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input'
 import { useState } from 'react'
 import { backupAccount, BackupProgress } from '@/lib/backup'
 import { loginWithBluesky, AuthSession } from '@/lib/auth'
+import { create } from '@web3-storage/w3up-client'
 
 export default function Home () {
   const [blueskyAccount, setBlueskyAccount] = useState('')
@@ -13,6 +14,7 @@ export default function Home () {
   const [progress, setProgress] = useState<BackupProgress | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [session, setSession] = useState<AuthSession | null>(null)
+  const [uploadStatus, setUploadStatus] = useState<string>('')
 
   const handleLogin = async () => {
     try {
@@ -40,15 +42,29 @@ export default function Home () {
         setProgress(progress)
       })
 
-      // Create download link and trigger download
-      const a = document.createElement('a')
-      a.href = backup.url
-      a.download = backup.filename
-      document.body.appendChild(a)
-      a.click()
-      document.body.removeChild(a)
-      URL.revokeObjectURL(backup.url)
+      setProgress({ status: 'Initializing storage...' })
+      const client = await create()
 
+      if (!email.includes('@')) {
+        throw new Error('Invalid email format')
+      }
+      const account = await client.login(email as `${string}@${string}`)
+
+      const space = await client.createSpace('bluesky-backup')
+
+      await client.setCurrentSpace(space.did())
+
+      const blob = new Blob([JSON.stringify(backup)], {
+        type: 'application/json'
+      })
+      const file = new File([blob], `bluesky-backup-${session.handle}.json`, {
+        type: 'application/json'
+      })
+
+      setProgress({ status: 'Uploading to Storacha...' })
+      const cid = await client.uploadFile(file)
+
+      setUploadStatus(`Backup stored with CID: ${cid}`)
       setProgress({ status: 'Backup complete!' })
     } catch (err) {
       console.error('Backup failed:', err)
@@ -141,6 +157,12 @@ export default function Home () {
           {progress?.progress !== undefined && progress?.total !== undefined && (
             <div className='text-sm text-center'>
               Downloading media: {progress.progress} of {progress.total}
+            </div>
+          )}
+
+          {uploadStatus && (
+            <div className='text-sm text-green-500 text-center mt-2'>
+              {uploadStatus}
             </div>
           )}
 
