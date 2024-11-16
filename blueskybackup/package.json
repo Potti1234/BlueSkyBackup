@@ -19,6 +19,7 @@
     "clsx": "^2.1.1",
     "lucide-react": "^0.460.0",
     "next": "14.2.16",
+    "node-fetch": "2.6.1",
     "react": "^18",
     "react-dom": "^18",
     "tailwind-merge": "^2.5.4",
@@ -26,6 +27,7 @@
   },
   "devDependencies": {
     "@types/node": "^20",
+    "@types/node-fetch": "2.6.1",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "eslint": "^8",
