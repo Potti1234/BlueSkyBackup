@@ -72,9 +72,13 @@ export default function Home () {
       const blob = new Blob([JSON.stringify(backup)], {
         type: 'application/json'
       })
-      const file = new File([blob], `bluesky-backup-${session.handle}.json`, {
-        type: 'application/json'
-      })
+      const file = new File(
+        [blob],
+        `bluesky-backup-${session.handle}-${new Date().toISOString()}.json`,
+        {
+          type: 'application/json'
+        }
+      )
 
       setProgress({ status: 'Uploading to Storacha...' })
       const cid = await client.uploadFile(file)
