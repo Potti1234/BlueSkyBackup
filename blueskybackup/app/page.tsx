@@ -52,9 +52,22 @@ export default function Home () {
       }
       const account = await client.login(email as `${string}@${string}`)
 
-      const space = await client.createSpace('bluesky-backup')
+      //const space = await client.createSpace('bluesky-backup',)
+      const spaces = await client.spaces()
+      let space
 
-      await client.setCurrentSpace(space.did())
+      if (spaces.length === 0) {
+        // If no space exists, create a new one
+        space = await client.createSpace('default-space')
+        console.log('Space created:', space.did())
+        await client.addSpace(await space.createAuthorization(account))
+        client.setCurrentSpace(space.did())
+      } else {
+        // Use the first available space
+        space = spaces[0]
+        console.log('Using existing space:', space.did())
+        await client.setCurrentSpace(space.did())
+      }
 
       const blob = new Blob([JSON.stringify(backup)], {
         type: 'application/json'
