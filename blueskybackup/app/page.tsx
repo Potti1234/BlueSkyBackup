@@ -83,9 +83,12 @@ export default function Home () {
       setProgress({ status: 'Uploading to Storacha...' })
       const cid = await client.uploadFile(file)
 
-      setUploadStatus(`Backup stored with CID: ${cid}`)
+      setUploadStatus(
+        `Backup stored with CID: ${cid} View at https://${cid}.ipfs.w3s.link`
+      )
       setProgress({ status: 'Backup complete!' })
-    } catch (err) {
+    } catch (err: any) {
+      console.log(err.cause)
       console.error('Backup failed:', err)
       setError('Backup failed. Please check your account and try again.')
       setProgress(null)
