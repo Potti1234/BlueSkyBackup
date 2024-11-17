@@ -5,7 +5,8 @@ import { Input } from '@/components/ui/input'
 import { useState } from 'react'
 import { backupAccount, BackupProgress } from '@/lib/backup'
 import { loginWithBluesky, AuthSession } from '@/lib/auth'
-import { create } from '@web3-storage/w3up-client'
+
+const create = import('@/components/w3upWrap')
 
 export default function Home () {
   const [blueskyAccount, setBlueskyAccount] = useState('')
@@ -43,7 +44,8 @@ export default function Home () {
       })
 
       setProgress({ status: 'Initializing storage...' })
-      const client = await create()
+      const { default: createClient } = await create
+      const client = await createClient()
 
       if (!email.includes('@')) {
         throw new Error('Invalid email format')
